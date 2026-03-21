@@ -1,6 +1,6 @@
 {
   "name": "mcp-healthcheck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Programmatic health/liveness probe for MCP servers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,5 +21,17 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
+    "eslint": "^10.1.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   }
 }
