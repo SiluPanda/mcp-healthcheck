@@ -3,6 +3,7 @@
 Programmatic health and liveness probe for MCP (Model Context Protocol) servers.
 
 [![npm version](https://img.shields.io/npm/v/mcp-healthcheck.svg)](https://www.npmjs.com/package/mcp-healthcheck)
+[![npm downloads](https://img.shields.io/npm/dt/mcp-healthcheck.svg)](https://www.npmjs.com/package/mcp-healthcheck)
 [![license](https://img.shields.io/npm/l/mcp-healthcheck.svg)](https://github.com/SiluPanda/mcp-healthcheck/blob/master/LICENSE)
 [![node](https://img.shields.io/node/v/mcp-healthcheck.svg)](https://nodejs.org)
 
