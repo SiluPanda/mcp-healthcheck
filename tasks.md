@@ -6,39 +6,39 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ## Phase 1: Project Scaffolding and Configuration
 
-- [ ] **Install runtime dependency** — Add `@modelcontextprotocol/sdk` as a peer dependency (`^1.12.0`) and as a dev dependency. Run `npm install` to set up node_modules. | Status: not_done
+- [x] **Install runtime dependency** — Add `@modelcontextprotocol/sdk` as a peer dependency (`^1.12.0`) and as a dev dependency. Run `npm install` to set up node_modules. | Status: done
 
-- [ ] **Install dev dependencies** — Add `typescript`, `vitest`, and `eslint` as dev dependencies. Ensure versions are compatible with the existing `tsconfig.json` (ES2022 target, commonjs module). | Status: not_done
+- [x] **Install dev dependencies** — Add `typescript`, `vitest`, and `eslint` as dev dependencies. Ensure versions are compatible with the existing `tsconfig.json` (ES2022 target, commonjs module). | Status: done
 
 - [ ] **Configure package.json bin entry** — Add a `"bin"` field mapping `"mcp-healthcheck"` to `"dist/cli.js"`. This enables the CLI to be invoked as `mcp-healthcheck` after global install or via `npx`. | Status: not_done
 
 - [ ] **Add shebang to CLI entry point** — Ensure `src/cli.ts` will compile with `#!/usr/bin/env node` at the top of `dist/cli.js`. Consider a build post-process step or prepend the shebang in the source file. | Status: not_done
 
-- [ ] **Configure exports in package.json** — Verify `"main": "dist/index.js"` and `"types": "dist/index.d.ts"` are correct. Add `"exports"` field if needed for ESM/CJS dual support. Ensure `"files"` includes `"dist"`. | Status: not_done
+- [x] **Configure exports in package.json** — Verify `"main": "dist/index.js"` and `"types": "dist/index.d.ts"` are correct. Add `"exports"` field if needed for ESM/CJS dual support. Ensure `"files"` includes `"dist"`. | Status: done
 
-- [ ] **Set up ESLint configuration** — Create or verify `.eslintrc` / `eslint.config.js` with TypeScript support. Ensure `npm run lint` works against the `src/` directory. | Status: not_done
+- [x] **Set up ESLint configuration** — Create or verify `.eslintrc` / `eslint.config.js` with TypeScript support. Ensure `npm run lint` works against the `src/` directory. | Status: done
 
-- [ ] **Verify Vitest configuration** — Ensure Vitest runs with `npm run test`. Create `vitest.config.ts` if needed, or verify Vitest finds tests via convention (e.g., `src/__tests__/*.test.ts`). | Status: not_done
+- [x] **Verify Vitest configuration** — Ensure Vitest runs with `npm run test`. Create `vitest.config.ts` if needed, or verify Vitest finds tests via convention (e.g., `src/__tests__/*.test.ts`). | Status: done
 
-- [ ] **Create source directory structure** — Create the following file stubs under `src/`: `index.ts`, `types.ts`, `transport-factory.ts`, `check-runner.ts`, `report-builder.ts`, `cli.ts`, and `checks/` directory with `connect.ts`, `initialize.ts`, `tools.ts`, `resources.ts`, `prompts.ts`, `custom.ts`. | Status: not_done
+- [x] **Create source directory structure** — Create the following file stubs under `src/`: `index.ts`, `types.ts`, `transport-factory.ts`, `check-runner.ts`, `report-builder.ts`, `cli.ts`, and `checks/` directory with `connect.ts`, `initialize.ts`, `tools.ts`, `resources.ts`, `prompts.ts`, `custom.ts`. | Status: done
 
 ---
 
 ## Phase 2: Type Definitions
 
-- [ ] **Define TransportConfig types** — Implement `StdioTransportConfig`, `HttpTransportConfig`, `SseTransportConfig`, and the `TransportConfig` union type in `src/types.ts`. Include all fields: `type`, `command`, `args`, `env`, `cwd` (stdio); `type`, `url`, `headers` (http); `type`, `url`, `headers` (sse). | Status: not_done
+- [x] **Define TransportConfig types** — Implement `StdioTransportConfig`, `HttpTransportConfig`, `SseTransportConfig`, and the `TransportConfig` union type in `src/types.ts`. Include all fields: `type`, `command`, `args`, `env`, `cwd` (stdio); `type`, `url`, `headers` (http); `type`, `url`, `headers` (sse). | Status: done
 
-- [ ] **Define CustomCheckFn and CustomCheckResult types** — Implement `CustomCheckFn` as an async function receiving an MCP `Client` and returning `CustomCheckResult` with `passed`, `message`, and optional `details`. | Status: not_done
+- [x] **Define CustomCheckFn and CustomCheckResult types** — Implement `CustomCheckFn` as an async function receiving an MCP `Client` and returning `CustomCheckResult` with `passed`, `message`, and optional `details`. | Status: done
 
-- [ ] **Define Thresholds type** — Implement `Thresholds` interface with optional fields: `maxLatencyMs`, `minTools`, `maxTools`, `minResources`, `minPrompts`. | Status: not_done
+- [x] **Define Thresholds type** — Implement `Thresholds` interface with optional fields: `maxLatencyMs`, `minTools`, `maxTools`, `minResources`, `minPrompts`. | Status: done
 
-- [ ] **Define HealthCheckOptions type** — Implement the main options interface with fields: `transport` (required), `timeout` (default 30000), `checkTimeout` (default 10000), `skip` (array of 'tools'|'resources'|'prompts'), `thresholds`, `customChecks` (array with `name`, `fn`, `required`), `clientInfo`, and `signal` (AbortSignal). | Status: not_done
+- [x] **Define HealthCheckOptions type** — Implement the main options interface with fields: `transport` (required), `timeout` (default 30000), `checkTimeout` (default 10000), `skip` (array of 'tools'|'resources'|'prompts'), `thresholds`, `customChecks` (array with `name`, `fn`, `required`), `clientInfo`, and `signal` (AbortSignal). | Status: done
 
-- [ ] **Define HealthStatus type** — Implement `HealthStatus` as the union `'healthy' | 'unhealthy' | 'degraded'`. | Status: not_done
+- [x] **Define HealthStatus type** — Implement `HealthStatus` as the union `'healthy' | 'unhealthy' | 'degraded'`. | Status: done
 
 - [ ] **Define CheckResult and specialized result types** — Implement `CheckResult` base interface with `name`, `passed`, `durationMs`, `message`, `error` (with `code`, `message`, `stack`), and `details`. Implement extended interfaces: `ConnectCheckResult`, `InitializeCheckResult`, `ToolsCheckResult`, `ResourcesCheckResult`, `PromptsCheckResult`, `CustomCheckCheckResult` with their specific `details` shapes. | Status: not_done
 
-- [ ] **Define HealthReport type** — Implement `HealthReport` with `status`, `totalMs`, `timestamp` (ISO 8601), `checks` array, `summary` (total, passed, failed, skipped), and optional `server` (name, version, protocolVersion). | Status: not_done
+- [x] **Define HealthReport type** — Implement `HealthReport` with `status`, `totalMs`, `timestamp` (ISO 8601), `checks` array, `summary` (total, passed, failed, skipped), and optional `server` (name, version, protocolVersion). | Status: done
 
 - [ ] **Define error code constants** — Create string constants or an enum for all error codes: `TRANSPORT_ERROR`, `SPAWN_ERROR`, `HANDSHAKE_ERROR`, `PROTOCOL_ERROR`, `CHECK_TIMEOUT`, `OVERALL_TIMEOUT`, `ABORTED`, `THRESHOLD_VIOLATION`, `CUSTOM_CHECK_ERROR`, `UNKNOWN_ERROR`. | Status: not_done
 
@@ -46,15 +46,15 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ## Phase 3: Transport Factory
 
-- [ ] **Implement StdioClientTransport creation** — In `src/transport-factory.ts`, handle `StdioTransportConfig` by creating a `StdioClientTransport` from the MCP SDK. Pass `command`, `args`, `env` (merged with `process.env`), and `cwd` (defaults to `process.cwd()`). | Status: not_done
+- [x] **Implement StdioClientTransport creation** — In `src/transport-factory.ts`, handle `StdioTransportConfig` by creating a `StdioClientTransport` from the MCP SDK. Pass `command`, `args`, `env` (merged with `process.env`), and `cwd` (defaults to `process.cwd()`). | Status: done
 
-- [ ] **Implement StreamableHTTPClientTransport creation** — Handle `HttpTransportConfig` by creating a `StreamableHTTPClientTransport`. Pass the `url` (validated) and `headers` to the transport constructor. | Status: not_done
+- [x] **Implement StreamableHTTPClientTransport creation** — Handle `HttpTransportConfig` by creating a `StreamableHTTPClientTransport`. Pass the `url` (validated) and `headers` to the transport constructor. | Status: done
 
-- [ ] **Implement SSEClientTransport creation** — Handle `SseTransportConfig` by creating an `SSEClientTransport` from the SDK. Pass the `url` and `headers`. | Status: not_done
+- [x] **Implement SSEClientTransport creation** — Handle `SseTransportConfig` by creating an `SSEClientTransport` from the SDK. Pass the `url` and `headers`. | Status: done
 
-- [ ] **Add URL validation for HTTP/SSE transports** — Validate that the `url` field is a parseable URL before creating the transport. Throw a descriptive error if the URL is invalid. | Status: not_done
+- [x] **Add URL validation for HTTP/SSE transports** — Validate that the `url` field is a parseable URL before creating the transport. Throw a descriptive error if the URL is invalid. | Status: done
 
-- [ ] **Export a single factory function** — Expose `createTransport(config: TransportConfig): Transport` that dispatches to the correct transport constructor based on `config.type`. | Status: not_done
+- [x] **Export a single factory function** — Expose `createTransport(config: TransportConfig): Transport` that dispatches to the correct transport constructor based on `config.type`. | Status: done
 
 ---
 
@@ -62,49 +62,49 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ### Connect Check
 
-- [ ] **Implement connect check** — In `src/checks/connect.ts`, create a function that verifies transport-level connectivity. Since the MCP SDK's `Client.connect()` bundles transport connection and handshake, the connect check is a logical confirmation that the transport type was valid and no transport-layer error occurred (e.g., `ECONNREFUSED`, subprocess crash, `ENOENT`). Return a `ConnectCheckResult` with `transportType` in details. | Status: not_done
+- [x] **Implement connect check** — In `src/checks/connect.ts`, create a function that verifies transport-level connectivity. Since the MCP SDK's `Client.connect()` bundles transport connection and handshake, the connect check is a logical confirmation that the transport type was valid and no transport-layer error occurred (e.g., `ECONNREFUSED`, subprocess crash, `ENOENT`). Return a `ConnectCheckResult` with `transportType` in details. | Status: done
 
-- [ ] **Classify transport-level errors for connect check** — Detect and classify errors: `ENOENT`/`EACCES` as `SPAWN_ERROR` for stdio; `ECONNREFUSED`/DNS/TLS failures as `TRANSPORT_ERROR` for HTTP/SSE. Set the appropriate error code in the `CheckResult.error`. | Status: not_done
+- [x] **Classify transport-level errors for connect check** — Detect and classify errors: `ENOENT`/`EACCES` as `SPAWN_ERROR` for stdio; `ECONNREFUSED`/DNS/TLS failures as `TRANSPORT_ERROR` for HTTP/SSE. Set the appropriate error code in the `CheckResult.error`. | Status: done
 
 ### Initialize Check
 
-- [ ] **Implement initialize check** — In `src/checks/initialize.ts`, call `client.connect(transport)` which performs the MCP handshake. On success, extract `protocolVersion`, `serverInfo.name`, `serverInfo.version`, and `capabilities` from the result. Return an `InitializeCheckResult` with these details. | Status: not_done
+- [x] **Implement initialize check** — In `src/checks/initialize.ts`, call `client.connect(transport)` which performs the MCP handshake. On success, extract `protocolVersion`, `serverInfo.name`, `serverInfo.version`, and `capabilities` from the result. Return an `InitializeCheckResult` with these details. | Status: done
 
-- [ ] **Handle handshake failures in initialize check** — Catch JSON-RPC errors, version mismatches, and malformed responses. Classify as `HANDSHAKE_ERROR`. Include the original error message and stack in the result. | Status: not_done
+- [x] **Handle handshake failures in initialize check** — Catch JSON-RPC errors, version mismatches, and malformed responses. Classify as `HANDSHAKE_ERROR`. Include the original error message and stack in the result. | Status: done
 
-- [ ] **Separate connect vs. initialize error classification** — When `client.connect()` throws, classify transport-level errors (connection refused, spawn failure, DNS) under the `connect` check and protocol-level errors (handshake rejection, version mismatch) under the `initialize` check. | Status: not_done
+- [x] **Separate connect vs. initialize error classification** — When `client.connect()` throws, classify transport-level errors (connection refused, spawn failure, DNS) under the `connect` check and protocol-level errors (handshake rejection, version mismatch) under the `initialize` check. | Status: done
 
 ### Tools Check
 
-- [ ] **Implement tools check** — In `src/checks/tools.ts`, call `client.listTools()`. Collect all tools, handling pagination (follow `nextCursor` until undefined). Record `toolCount` and `toolNames`. Return a `ToolsCheckResult`. | Status: not_done
+- [x] **Implement tools check** — In `src/checks/tools.ts`, call `client.listTools()`. Collect all tools, handling pagination (follow `nextCursor` until undefined). Record `toolCount` and `toolNames`. Return a `ToolsCheckResult`. | Status: done
 
-- [ ] **Implement tools threshold validation** — If `thresholds.minTools` is set and `toolCount < minTools`, fail the check with error code `THRESHOLD_VIOLATION`. Same for `thresholds.maxTools` if `toolCount > maxTools`. | Status: not_done
+- [x] **Implement tools threshold validation** — If `thresholds.minTools` is set and `toolCount < minTools`, fail the check with error code `THRESHOLD_VIOLATION`. Same for `thresholds.maxTools` if `toolCount > maxTools`. | Status: done
 
 - [ ] **Implement tools auto-skip** — If the server did not declare the `tools` capability in its initialization response, auto-skip the tools check with `passed: true`, `durationMs: 0`, and a message indicating the server does not support tools. | Status: not_done
 
 ### Resources Check
 
-- [ ] **Implement resources check** — In `src/checks/resources.ts`, call `client.listResources()`. Paginate, collect `resourceCount` and `resourceUris`. Return a `ResourcesCheckResult`. | Status: not_done
+- [x] **Implement resources check** — In `src/checks/resources.ts`, call `client.listResources()`. Paginate, collect `resourceCount` and `resourceUris`. Return a `ResourcesCheckResult`. | Status: done
 
-- [ ] **Implement resources threshold validation** — If `thresholds.minResources` is set and `resourceCount < minResources`, fail the check with `THRESHOLD_VIOLATION`. | Status: not_done
+- [x] **Implement resources threshold validation** — If `thresholds.minResources` is set and `resourceCount < minResources`, fail the check with `THRESHOLD_VIOLATION`. | Status: done
 
 - [ ] **Implement resources auto-skip** — If the server did not declare `resources` capability, auto-skip with a passing result and descriptive message. | Status: not_done
 
 ### Prompts Check
 
-- [ ] **Implement prompts check** — In `src/checks/prompts.ts`, call `client.listPrompts()`. Paginate, collect `promptCount` and `promptNames`. Return a `PromptsCheckResult`. | Status: not_done
+- [x] **Implement prompts check** — In `src/checks/prompts.ts`, call `client.listPrompts()`. Paginate, collect `promptCount` and `promptNames`. Return a `PromptsCheckResult`. | Status: done
 
-- [ ] **Implement prompts threshold validation** — If `thresholds.minPrompts` is set and `promptCount < minPrompts`, fail with `THRESHOLD_VIOLATION`. | Status: not_done
+- [x] **Implement prompts threshold validation** — If `thresholds.minPrompts` is set and `promptCount < minPrompts`, fail with `THRESHOLD_VIOLATION`. | Status: done
 
 - [ ] **Implement prompts auto-skip** — If the server did not declare `prompts` capability, auto-skip with a passing result. | Status: not_done
 
 ### Custom Checks
 
-- [ ] **Implement custom check runner** — In `src/checks/custom.ts`, iterate through the `customChecks` array. For each, call `fn(client)`, wrap in try/catch, and produce a `CheckResult`. Use the user-provided `name` as the check name. | Status: not_done
+- [x] **Implement custom check runner** — In `src/checks/custom.ts`, iterate through the `customChecks` array. For each, call `fn(client)`, wrap in try/catch, and produce a `CheckResult`. Use the user-provided `name` as the check name. | Status: done
 
-- [ ] **Handle custom check exceptions** — If a custom check throws (sync or async), treat it as a failure with error code `CUSTOM_CHECK_ERROR` and use the thrown error's message. | Status: not_done
+- [x] **Handle custom check exceptions** — If a custom check throws (sync or async), treat it as a failure with error code `CUSTOM_CHECK_ERROR` and use the thrown error's message. | Status: done
 
-- [ ] **Apply per-check timeout to custom checks** — Each custom check must respect the `checkTimeout`. Wrap in `Promise.race` with a timer. If it times out, record as `CHECK_TIMEOUT`. | Status: not_done
+- [x] **Apply per-check timeout to custom checks** — Each custom check must respect the `checkTimeout`. Wrap in `Promise.race` with a timer. If it times out, record as `CHECK_TIMEOUT`. | Status: done
 
 - [ ] **Determine required vs. optional custom check impact** — If `required: true` and the custom check fails, the overall status is `unhealthy`. If `required: false` (default), a failure marks status as `degraded`. | Status: not_done
 
@@ -112,55 +112,55 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ## Phase 5: Check Runner (Orchestration)
 
-- [ ] **Implement check sequencing** — In `src/check-runner.ts`, execute checks in the fixed order: connect, initialize, tools, resources, prompts, then custom checks. Each check runs sequentially (not in parallel). | Status: not_done
+- [x] **Implement check sequencing** — In `src/check-runner.ts`, execute checks in the fixed order: connect, initialize, tools, resources, prompts, then custom checks. Each check runs sequentially (not in parallel). | Status: done
 
-- [ ] **Implement per-check timeout enforcement** — Wrap each check call in `Promise.race` with a timeout promise (rejects after `checkTimeout` ms). On timeout, record a failure with error code `CHECK_TIMEOUT`. | Status: not_done
+- [x] **Implement per-check timeout enforcement** — Wrap each check call in `Promise.race` with a timeout promise (rejects after `checkTimeout` ms). On timeout, record a failure with error code `CHECK_TIMEOUT`. | Status: done
 
 - [ ] **Implement overall timeout enforcement** — Start a master timer when `checkHealth()` begins. If it fires before all checks complete, skip remaining checks and record them as failures with `OVERALL_TIMEOUT` and message `'Skipped: overall timeout exceeded'`. | Status: not_done
 
-- [ ] **Implement skip logic** — If a check name (tools, resources, prompts) appears in the `skip` array, skip it entirely. Do not produce a `CheckResult` for skipped checks (or produce one with a skipped indicator). Increment `summary.skipped`. | Status: not_done
+- [x] **Implement skip logic** — If a check name (tools, resources, prompts) appears in the `skip` array, skip it entirely. Do not produce a `CheckResult` for skipped checks (or produce one with a skipped indicator). Increment `summary.skipped`. | Status: done
 
-- [ ] **Handle dependency failures** — If `connect` or `initialize` fails, skip all subsequent checks and record them with error code `OVERALL_TIMEOUT` and message `'Skipped: previous required check failed'`. | Status: not_done
+- [x] **Handle dependency failures** — If `connect` or `initialize` fails, skip all subsequent checks and record them with error code `OVERALL_TIMEOUT` and message `'Skipped: previous required check failed'`. | Status: done
 
 - [ ] **Implement AbortSignal support** — If the caller provides a `signal`, compose it with internal AbortControllers. When aborted, stop immediately and return an unhealthy report with error code `ABORTED`. | Status: not_done
 
-- [ ] **Implement latency measurement** — Measure each check's duration using `performance.now()`. Record in `durationMs` field of each `CheckResult`. | Status: not_done
+- [x] **Implement latency measurement** — Measure each check's duration using `performance.now()`. Record in `durationMs` field of each `CheckResult`. | Status: done
 
-- [ ] **Implement maxLatencyMs threshold evaluation** — After all checks complete, if `thresholds.maxLatencyMs` is set and any check's `durationMs` exceeds it, set overall status to `degraded` (the check itself still passes, but the report reflects the latency violation). | Status: not_done
+- [x] **Implement maxLatencyMs threshold evaluation** — After all checks complete, if `thresholds.maxLatencyMs` is set and any check's `durationMs` exceeds it, set overall status to `degraded` (the check itself still passes, but the report reflects the latency violation). | Status: done
 
-- [ ] **Implement client creation** — Create an MCP `Client` instance with `clientInfo` (defaulting to `{ name: 'mcp-healthcheck', version: '<package version>' }`). | Status: not_done
+- [x] **Implement client creation** — Create an MCP `Client` instance with `clientInfo` (defaulting to `{ name: 'mcp-healthcheck', version: '<package version>' }`). | Status: done
 
-- [ ] **Implement resource cleanup in finally block** — Always call `client.close()` in a `finally` block. For stdio transports, terminate the subprocess: send `SIGTERM`, wait up to 5 seconds, then `SIGKILL` if still running. Ensure no zombie processes. | Status: not_done
+- [x] **Implement resource cleanup in finally block** — Always call `client.close()` in a `finally` block. For stdio transports, terminate the subprocess: send `SIGTERM`, wait up to 5 seconds, then `SIGKILL` if still running. Ensure no zombie processes. | Status: done
 
 ---
 
 ## Phase 6: Report Builder
 
-- [ ] **Implement status computation** — In `src/report-builder.ts`, compute overall `HealthStatus` from check results: all passed = `'healthy'`, any required check failed = `'unhealthy'`, only optional checks or latency thresholds failed = `'degraded'`. | Status: not_done
+- [x] **Implement status computation** — In `src/report-builder.ts`, compute overall `HealthStatus` from check results: all passed = `'healthy'`, any required check failed = `'unhealthy'`, only optional checks or latency thresholds failed = `'degraded'`. | Status: done
 
-- [ ] **Implement summary computation** — Count `total`, `passed`, `failed`, and `skipped` checks from the results array. | Status: not_done
+- [x] **Implement summary computation** — Count `total`, `passed`, `failed`, and `skipped` checks from the results array. | Status: done
 
-- [ ] **Implement timestamp generation** — Generate an ISO 8601 timestamp (`new Date().toISOString()`) for the `timestamp` field. | Status: not_done
+- [x] **Implement timestamp generation** — Generate an ISO 8601 timestamp (`new Date().toISOString()`) for the `timestamp` field. | Status: done
 
-- [ ] **Populate server info** — Extract `name`, `version`, and `protocolVersion` from the initialize check result (if it passed) and populate `HealthReport.server`. | Status: not_done
+- [x] **Populate server info** — Extract `name`, `version`, and `protocolVersion` from the initialize check result (if it passed) and populate `HealthReport.server`. | Status: done
 
-- [ ] **Compute totalMs** — Measure wall-clock time from the start to end of `checkHealth()` and set `totalMs`. | Status: not_done
+- [x] **Compute totalMs** — Measure wall-clock time from the start to end of `checkHealth()` and set `totalMs`. | Status: done
 
-- [ ] **Assemble and return HealthReport** — Combine all fields into the final `HealthReport` object and return it. | Status: not_done
+- [x] **Assemble and return HealthReport** — Combine all fields into the final `HealthReport` object and return it. | Status: done
 
 ---
 
 ## Phase 7: Main API (`checkHealth` and helpers)
 
-- [ ] **Implement checkHealth function** — In `src/index.ts`, implement the main `checkHealth(options: HealthCheckOptions): Promise<HealthReport>` function. Wire together transport factory, check runner, and report builder. Ensure it never throws; all errors are captured in the report. | Status: not_done
+- [x] **Implement checkHealth function** — In `src/index.ts`, implement the main `checkHealth(options: HealthCheckOptions): Promise<HealthReport>` function. Wire together transport factory, check runner, and report builder. Ensure it never throws; all errors are captured in the report. | Status: done
 
-- [ ] **Apply default values** — Apply defaults for all optional fields: `timeout` (30000), `checkTimeout` (10000), `skip` ([]), `thresholds` ({}), `customChecks` ([]), `clientInfo` ({ name: 'mcp-healthcheck', version from package.json }). | Status: not_done
+- [x] **Apply default values** — Apply defaults for all optional fields: `timeout` (30000), `checkTimeout` (10000), `skip` ([]), `thresholds` ({}), `customChecks` ([]), `clientInfo` ({ name: 'mcp-healthcheck', version from package.json }). | Status: done
 
-- [ ] **Implement isHealthy helper** — Export `isHealthy(options): Promise<boolean>` that calls `checkHealth` and returns `report.status === 'healthy'`. | Status: not_done
+- [x] **Implement isHealthy helper** — Export `isHealthy(options): Promise<boolean>` that calls `checkHealth` and returns `report.status === 'healthy'`. | Status: done
 
 - [ ] **Implement createHttpHandler helper** — Export `createHttpHandler(options): (req, res) => void` that creates an HTTP request handler. On `GET`, run `checkHealth` and respond with `200` (healthy/degraded) or `503` (unhealthy) with `Content-Type: application/json` and the `HealthReport` body. On any other method, respond with `405 Method Not Allowed`. | Status: not_done
 
-- [ ] **Configure public exports** — In `src/index.ts`, export `checkHealth`, `isHealthy`, `createHttpHandler`, and all public types (`HealthCheckOptions`, `HealthReport`, `HealthStatus`, `CheckResult`, `TransportConfig`, `StdioTransportConfig`, `HttpTransportConfig`, `SseTransportConfig`, `Thresholds`, `CustomCheckFn`, `CustomCheckResult`, etc.). | Status: not_done
+- [x] **Configure public exports** — In `src/index.ts`, export `checkHealth`, `isHealthy`, `createHttpHandler`, and all public types (`HealthCheckOptions`, `HealthReport`, `HealthStatus`, `CheckResult`, `TransportConfig`, `StdioTransportConfig`, `HttpTransportConfig`, `SseTransportConfig`, `Thresholds`, `CustomCheckFn`, `CustomCheckResult`, etc.). | Status: done
 
 ---
 
@@ -218,9 +218,9 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 - [ ] **Test stdio transport creation** — Verify `createTransport` creates a `StdioClientTransport` when given a `StdioTransportConfig`. Verify `command`, `args`, `env`, and `cwd` are passed correctly. | Status: not_done
 
-- [ ] **Test HTTP transport creation** — Verify `createTransport` creates a `StreamableHTTPClientTransport` when given an `HttpTransportConfig`. Verify `url` and `headers` are applied. | Status: not_done
+- [x] **Test HTTP transport creation** — Verify `createTransport` creates a `StreamableHTTPClientTransport` when given an `HttpTransportConfig`. Verify `url` and `headers` are applied. | Status: done
 
-- [ ] **Test SSE transport creation** — Verify `createTransport` creates an `SSEClientTransport` when given an `SseTransportConfig`. Verify `url` and `headers` are applied. | Status: not_done
+- [x] **Test SSE transport creation** — Verify `createTransport` creates an `SSEClientTransport` when given an `SseTransportConfig`. Verify `url` and `headers` are applied. | Status: done
 
 - [ ] **Test URL validation** — Verify that an invalid URL in HTTP/SSE config throws a descriptive error. | Status: not_done
 
@@ -232,11 +232,11 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 - [ ] **Test overall timeout enforcement** — Set a short overall timeout with multiple checks. Verify that remaining checks are skipped with `OVERALL_TIMEOUT` when the master timer fires. | Status: not_done
 
-- [ ] **Test skip behavior** — Set `skip: ['tools', 'prompts']`. Verify those checks are not executed and `summary.skipped` reflects the correct count. | Status: not_done
+- [x] **Test skip behavior** — Set `skip: ['tools', 'prompts']`. Verify those checks are not executed and `summary.skipped` reflects the correct count. | Status: done
 
 - [ ] **Test auto-skip when capabilities are missing** — Mock a server that does not declare `resources` capability. Verify the resources check is auto-skipped with `passed: true`. | Status: not_done
 
-- [ ] **Test dependency failure propagation** — Make the `connect` check fail. Verify all subsequent checks are skipped with appropriate messages. | Status: not_done
+- [x] **Test dependency failure propagation** — Make the `connect` check fail. Verify all subsequent checks are skipped with appropriate messages. | Status: done
 
 - [ ] **Test AbortSignal cancellation** — Create an AbortController and abort it mid-check. Verify the health check returns immediately with `ABORTED`. | Status: not_done
 
@@ -244,53 +244,53 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 - [ ] **Test connect check success (stdio)** — Mock a successful subprocess spawn. Verify `passed: true` and `details.transportType === 'stdio'`. | Status: not_done
 
-- [ ] **Test connect check failure (ENOENT)** — Mock a command-not-found error. Verify `passed: false` and `error.code === 'SPAWN_ERROR'`. | Status: not_done
+- [x] **Test connect check failure (ENOENT)** — Mock a command-not-found error. Verify `passed: false` and `error.code === 'SPAWN_ERROR'`. | Status: done
 
-- [ ] **Test connect check failure (ECONNREFUSED)** — Mock a connection refused error for HTTP. Verify `passed: false` and `error.code === 'TRANSPORT_ERROR'`. | Status: not_done
+- [x] **Test connect check failure (ECONNREFUSED)** — Mock a connection refused error for HTTP. Verify `passed: false` and `error.code === 'TRANSPORT_ERROR'`. | Status: done
 
-- [ ] **Test initialize check success** — Mock a successful handshake response. Verify `passed: true` and extracted `protocolVersion`, `serverName`, `serverVersion`, `capabilities`. | Status: not_done
+- [x] **Test initialize check success** — Mock a successful handshake response. Verify `passed: true` and extracted `protocolVersion`, `serverName`, `serverVersion`, `capabilities`. | Status: done
 
-- [ ] **Test initialize check failure (handshake error)** — Mock a JSON-RPC error response. Verify `passed: false` and `error.code === 'HANDSHAKE_ERROR'`. | Status: not_done
+- [x] **Test initialize check failure (handshake error)** — Mock a JSON-RPC error response. Verify `passed: false` and `error.code === 'HANDSHAKE_ERROR'`. | Status: done
 
-- [ ] **Test tools check success** — Mock `listTools()` returning 3 tools. Verify `toolCount: 3` and correct `toolNames`. | Status: not_done
+- [x] **Test tools check success** — Mock `listTools()` returning 3 tools. Verify `toolCount: 3` and correct `toolNames`. | Status: done
 
 - [ ] **Test tools check with pagination** — Mock paginated `listTools()` with 2 pages. Verify all tools across pages are accumulated. | Status: not_done
 
-- [ ] **Test tools check threshold failure (minTools)** — Set `minTools: 5` but return 3 tools. Verify `passed: false` and `error.code === 'THRESHOLD_VIOLATION'`. | Status: not_done
+- [x] **Test tools check threshold failure (minTools)** — Set `minTools: 5` but return 3 tools. Verify `passed: false` and `error.code === 'THRESHOLD_VIOLATION'`. | Status: done
 
-- [ ] **Test tools check threshold failure (maxTools)** — Set `maxTools: 2` but return 3 tools. Verify `passed: false` and `error.code === 'THRESHOLD_VIOLATION'`. | Status: not_done
+- [x] **Test tools check threshold failure (maxTools)** — Set `maxTools: 2` but return 3 tools. Verify `passed: false` and `error.code === 'THRESHOLD_VIOLATION'`. | Status: done
 
-- [ ] **Test resources check success** — Mock `listResources()` returning 2 resources. Verify counts and URIs. | Status: not_done
+- [x] **Test resources check success** — Mock `listResources()` returning 2 resources. Verify counts and URIs. | Status: done
 
-- [ ] **Test resources check threshold failure** — Set `minResources: 3` but return 1. Verify failure with `THRESHOLD_VIOLATION`. | Status: not_done
+- [x] **Test resources check threshold failure** — Set `minResources: 3` but return 1. Verify failure with `THRESHOLD_VIOLATION`. | Status: done
 
-- [ ] **Test prompts check success** — Mock `listPrompts()` returning prompts. Verify counts and names. | Status: not_done
+- [x] **Test prompts check success** — Mock `listPrompts()` returning prompts. Verify counts and names. | Status: done
 
-- [ ] **Test prompts check threshold failure** — Set `minPrompts: 2` but return 0. Verify failure. | Status: not_done
+- [x] **Test prompts check threshold failure** — Set `minPrompts: 2` but return 0. Verify failure. | Status: done
 
-- [ ] **Test custom check success** — Provide a custom check that returns `{ passed: true, message: 'ok' }`. Verify it appears in the report. | Status: not_done
+- [x] **Test custom check success** — Provide a custom check that returns `{ passed: true, message: 'ok' }`. Verify it appears in the report. | Status: done
 
 - [ ] **Test custom check failure (required)** — Provide a required custom check that fails. Verify overall status is `unhealthy`. | Status: not_done
 
-- [ ] **Test custom check failure (optional)** — Provide an optional custom check that fails. Verify overall status is `degraded`. | Status: not_done
+- [x] **Test custom check failure (optional)** — Provide an optional custom check that fails. Verify overall status is `degraded`. | Status: done
 
-- [ ] **Test custom check throws exception** — Provide a custom check that throws. Verify it is recorded as a failure with `CUSTOM_CHECK_ERROR`. | Status: not_done
+- [x] **Test custom check throws exception** — Provide a custom check that throws. Verify it is recorded as a failure with `CUSTOM_CHECK_ERROR`. | Status: done
 
 - [ ] **Test custom check throws synchronous exception** — Verify synchronous throws in custom check functions are properly caught. | Status: not_done
 
 ### Report Builder Tests
 
-- [ ] **Test all-passed produces healthy status** — Provide all-passing check results. Verify `status === 'healthy'`. | Status: not_done
+- [x] **Test all-passed produces healthy status** — Provide all-passing check results. Verify `status === 'healthy'`. | Status: done
 
-- [ ] **Test required failure produces unhealthy status** — Include a failed required check. Verify `status === 'unhealthy'`. | Status: not_done
+- [x] **Test required failure produces unhealthy status** — Include a failed required check. Verify `status === 'unhealthy'`. | Status: done
 
-- [ ] **Test optional failure produces degraded status** — Include only optional/latency failures. Verify `status === 'degraded'`. | Status: not_done
+- [x] **Test optional failure produces degraded status** — Include only optional/latency failures. Verify `status === 'degraded'`. | Status: done
 
-- [ ] **Test summary counts** — Verify `total`, `passed`, `failed`, and `skipped` are correctly computed. | Status: not_done
+- [x] **Test summary counts** — Verify `total`, `passed`, `failed`, and `skipped` are correctly computed. | Status: done
 
-- [ ] **Test timestamp format** — Verify `timestamp` is a valid ISO 8601 string. | Status: not_done
+- [x] **Test timestamp format** — Verify `timestamp` is a valid ISO 8601 string. | Status: done
 
-- [ ] **Test server info population** — Verify `server` field is populated from the initialize check result. | Status: not_done
+- [x] **Test server info population** — Verify `server` field is populated from the initialize check result. | Status: done
 
 ### Threshold Tests
 
@@ -382,11 +382,11 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ## Phase 13: `isHealthy` Helper Tests
 
-- [ ] **Test isHealthy returns true for healthy** — Mock `checkHealth` returning a healthy report. Verify `isHealthy` returns `true`. | Status: not_done
+- [x] **Test isHealthy returns true for healthy** — Mock `checkHealth` returning a healthy report. Verify `isHealthy` returns `true`. | Status: done
 
-- [ ] **Test isHealthy returns false for unhealthy** — Mock `checkHealth` returning an unhealthy report. Verify `isHealthy` returns `false`. | Status: not_done
+- [x] **Test isHealthy returns false for unhealthy** — Mock `checkHealth` returning an unhealthy report. Verify `isHealthy` returns `false`. | Status: done
 
-- [ ] **Test isHealthy returns false for degraded** — Mock `checkHealth` returning a degraded report. Verify `isHealthy` returns `false` (only `healthy` is true). | Status: not_done
+- [x] **Test isHealthy returns false for degraded** — Mock `checkHealth` returning a degraded report. Verify `isHealthy` returns `false` (only `healthy` is true). | Status: done
 
 ---
 
@@ -412,7 +412,7 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ## Phase 15: Documentation
 
-- [ ] **Write README.md** — Create a comprehensive README covering: overview, installation, quick-start examples (stdio, HTTP, SSE), API reference for `checkHealth`, `isHealthy`, and `createHttpHandler`, CLI usage with all flags, environment variables, exit codes, threshold configuration, custom checks, Kubernetes probe example, CI pipeline example, and links to the SPEC.md. | Status: not_done
+- [x] **Write README.md** — Create a comprehensive README covering: overview, installation, quick-start examples (stdio, HTTP, SSE), API reference for `checkHealth`, `isHealthy`, and `createHttpHandler`, CLI usage with all flags, environment variables, exit codes, threshold configuration, custom checks, Kubernetes probe example, CI pipeline example, and links to the SPEC.md. | Status: done
 
 - [ ] **Add JSDoc comments to all public exports** — Add JSDoc to `checkHealth`, `isHealthy`, `createHttpHandler`, and all exported types/interfaces. Include parameter descriptions, return types, default values, and usage examples. | Status: not_done
 
@@ -422,7 +422,7 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 ## Phase 16: Build and Publish Preparation
 
-- [ ] **Verify TypeScript compilation** — Run `npm run build` and verify it produces correct output in `dist/` with `.js`, `.d.ts`, and `.d.ts.map` files for all modules. | Status: not_done
+- [x] **Verify TypeScript compilation** — Run `npm run build` and verify it produces correct output in `dist/` with `.js`, `.d.ts`, and `.d.ts.map` files for all modules. | Status: done
 
 - [ ] **Verify CLI executable after build** — Run `node dist/cli.js --help` and verify it prints usage. Run `node dist/cli.js --version` and verify it prints the version. | Status: not_done
 
@@ -430,10 +430,10 @@ This document breaks down all work required to implement `mcp-healthcheck` as de
 
 - [ ] **Verify all tests pass** — Run `npm run test` and ensure 100% pass rate. | Status: not_done
 
-- [ ] **Bump version in package.json** — Set version to `0.1.0` (or appropriate initial version) in `package.json`. | Status: not_done
+- [x] **Bump version in package.json** — Set version to `0.1.0` (or appropriate initial version) in `package.json`. | Status: done
 
 - [ ] **Verify package contents** — Run `npm pack --dry-run` and verify only `dist/` files are included. No source files, test files, or unnecessary files should be in the published package. | Status: not_done
 
-- [ ] **Verify peer dependency declaration** — Ensure `package.json` declares `"peerDependencies": { "@modelcontextprotocol/sdk": "^1.12.0" }`. | Status: not_done
+- [x] **Verify peer dependency declaration** — Ensure `package.json` declares `"peerDependencies": { "@modelcontextprotocol/sdk": "^1.12.0" }`. | Status: done
 
 - [ ] **Test npx invocation** — After building, verify `npx . --help` works correctly from the project root. | Status: not_done
