@@ -40,15 +40,11 @@ export async function runConnectCheck(
 export async function runInitializeCheck(
   client: Client,
   _clientInfo: { name: string; version: string },
-  timeoutMs: number
+  _timeoutMs: number
 ): Promise<{ result: CheckResult; serverInfo?: { name: string; version: string; protocolVersion: string } }> {
   const start = Date.now();
   // The SDK automatically initializes during connect(); here we just verify the server version is available.
   try {
-    await Promise.race([
-      Promise.resolve(),
-      makeTimeout(timeoutMs),
-    ]);
     const serverVersion = client.getServerVersion();
     const durationMs = Date.now() - start;
     if (!serverVersion) {
