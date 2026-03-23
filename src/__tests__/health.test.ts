@@ -111,6 +111,17 @@ describe('checkHealth()', () => {
     expect(initCheck?.passed).toBe(false);
   });
 
+  it('counts all capability checks as skipped when init fails', async () => {
+    mockGetServerVersion.mockReturnValue(undefined);
+
+    const report = await checkHealth(stdioOptions);
+
+    expect(report.status).toBe('unhealthy');
+    // Tools, resources, prompts are all skipped because init failed = 3
+    expect(report.summary.skipped).toBe(3);
+    expect(report.summary.total).toBe(report.checks.length + 3);
+  });
+
   it('skips tools check when skip includes "tools"', async () => {
     const report = await checkHealth({ ...stdioOptions, skip: ['tools'] });
 

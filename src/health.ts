@@ -81,7 +81,7 @@ export async function checkHealth(options: HealthCheckOptions): Promise<HealthRe
 
     if (!initPassed) {
       const status = computeStatus(checks, connectPassed, initPassed);
-      const skippedCount = skip.length + (options.customChecks?.length ?? 0);
+      const skippedCount = 3 + (options.customChecks?.length ?? 0); // 3 capability checks (tools, resources, prompts) all skipped due to init failure
       return {
         status,
         totalMs: Date.now() - startMs,
@@ -118,12 +118,14 @@ export async function checkHealth(options: HealthCheckOptions): Promise<HealthRe
     for (const customCheck of options.customChecks ?? []) {
       const checkStart = Date.now();
       try {
+        let timer: ReturnType<typeof setTimeout>;
         const result = await Promise.race([
           customCheck.fn(client),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error(`Custom check timed out after ${checkTimeout}ms`)), checkTimeout)
-          ),
+          new Promise<never>((_, reject) => {
+            timer = setTimeout(() => reject(new Error(`Custom check timed out after ${checkTimeout}ms`)), checkTimeout);
+          }),
         ]);
+        clearTimeout(timer!);
         checks.push({
           name: customCheck.name,
           passed: result.passed,
