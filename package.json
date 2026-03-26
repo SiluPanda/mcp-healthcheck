@@ -1,6 +1,6 @@
 {
   "name": "mcp-healthcheck",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Programmatic health/liveness probe for MCP servers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
