@@ -1,10 +1,12 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import type { CheckResult, Thresholds } from './types.js';
 
-function makeTimeout(ms: number): Promise<never> {
-  return new Promise((_, reject) =>
-    setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms)
-  );
+async function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer!));
 }
 
 export async function runConnectCheck(
@@ -14,10 +16,11 @@ export async function runConnectCheck(
 ): Promise<CheckResult> {
   const start = Date.now();
   try {
-    await Promise.race([
+    await withTimeout(
       client.connect(transport as Parameters<typeof client.connect>[0]),
-      makeTimeout(timeoutMs),
-    ]);
+      timeoutMs,
+      'connect',
+    );
     return {
       name: 'connect',
       passed: true,
@@ -93,10 +96,7 @@ export async function runToolsCheck(
 ): Promise<CheckResult> {
   const start = Date.now();
   try {
-    const response = await Promise.race([
-      client.listTools(),
-      makeTimeout(timeoutMs),
-    ]);
+    const response = await withTimeout(client.listTools(), timeoutMs, 'tools/list');
     const tools = response.tools ?? [];
     const toolCount = tools.length;
     const toolNames = tools.map((t) => t.name);
@@ -149,10 +149,7 @@ export async function runResourcesCheck(
 ): Promise<CheckResult> {
   const start = Date.now();
   try {
-    const response = await Promise.race([
-      client.listResources(),
-      makeTimeout(timeoutMs),
-    ]);
+    const response = await withTimeout(client.listResources(), timeoutMs, 'resources/list');
     const resources = response.resources ?? [];
     const resourceCount = resources.length;
     const resourceUris = resources.map((r) => r.uri);
@@ -195,10 +192,7 @@ export async function runPromptsCheck(
 ): Promise<CheckResult> {
   const start = Date.now();
   try {
-    const response = await Promise.race([
-      client.listPrompts(),
-      makeTimeout(timeoutMs),
-    ]);
+    const response = await withTimeout(client.listPrompts(), timeoutMs, 'prompts/list');
     const prompts = response.prompts ?? [];
     const promptCount = prompts.length;
     const promptNames = prompts.map((p) => p.name);

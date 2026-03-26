@@ -119,13 +119,10 @@ export async function checkHealth(options: HealthCheckOptions): Promise<HealthRe
       const checkStart = Date.now();
       try {
         let timer: ReturnType<typeof setTimeout>;
-        const result = await Promise.race([
-          customCheck.fn(client),
-          new Promise<never>((_, reject) => {
-            timer = setTimeout(() => reject(new Error(`Custom check timed out after ${checkTimeout}ms`)), checkTimeout);
-          }),
-        ]);
-        clearTimeout(timer!);
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error(`Custom check timed out after ${checkTimeout}ms`)), checkTimeout);
+        });
+        const result = await Promise.race([customCheck.fn(client), timeoutPromise]).finally(() => clearTimeout(timer!));
         checks.push({
           name: customCheck.name,
           passed: result.passed,
